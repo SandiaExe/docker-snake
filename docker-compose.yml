@@ -1,0 +1,30 @@
+services:
+  streamlit:
+    image: python:3.11-slim
+    container_name: snake_app
+    working_dir: /app
+    ports:
+      - "8501:8501"
+    environment:
+      MONGO_URI: mongodb://mongo:27017/
+      MONGO_DB: snake_db
+    volumes:
+      - ./streamlit:/app
+    depends_on:
+      - mongo
+    command: >
+      bash -c "
+      pip install -r requirements.txt &&
+      streamlit run app.py --server.address=0.0.0.0
+      "
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
